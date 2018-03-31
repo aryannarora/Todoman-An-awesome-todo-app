@@ -147,26 +147,22 @@
 <body>
 
   <div id="myDIV" class="header">
-    <span style="float:right">
-      <a class="btn" href="/user/logout">Logout</a>
+    <span style="float:right; width:20% !important;" class="addBtn">
+      <a  href="/user/logout">Logout</a>
     </span>
     <div class="imgcontainer">
       <img src="../todo.png" style="width:200px; height:200px" alt="Avatar" class="avatar">
     </div>
 
     <input type="text" id="myInput" placeholder="Title..." name="task" autofocus>
-    <span id="click" onclick="newElement()" class="addBtn btn btn-primary">Add task</span>
+    <span id="click"  class="addBtn btn btn-primary">Add task</span>
   </div>
   <h3 style="text-align:center">Your tasks appear here: </h3>
 
   <ul id="myUL">
     <% tasks.forEach( function (task) { %>
       <li <% if(task.completed) { %> class="checked"
-        <% } %> >
-          <span>
-            <%=task.task%>
-          </span>
-      </li>
+        <% } %> ><span class="tasks"><%=task.task%></span></li>
       <% }) %>
   </ul>
   <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
@@ -197,8 +193,16 @@
     for (i = 0; i < close.length; i++) {
       close[i].onclick = function () {
         var div = this.parentElement;
-        const data = {
-          task: div.childNodes[0].innerHTML
+        console.log(div)
+        div.style.display = "none";
+      }
+    }
+    
+    $(document).on('click','.close', function(e) {
+      console.log('removing...')
+      console.log($(this).parent().children()[0].innerHTML)
+      const data = {
+          task: $(this).parent().children()[0].innerHTML
         }
 
         $.ajax({
@@ -210,15 +214,13 @@
             console.log("deleted");
           }
         });
-        div.style.display = "none";
-      }
-    }
+    })
 
     // Add a "checked" symbol when clicking on a list item
-    var list = document.querySelector('ul');
-    list.addEventListener('click', function (ev) {
+  
+    $('ul').on('click', function (ev) {
       if (ev.target.tagName === 'LI') {
-        console.log(ev.target.childNodes[0].innerHTML)
+        console.log(ev.target.childNodes)
         ev.target.classList.toggle('checked');
         data = {
           task: ev.target.childNodes[0].innerHTML
@@ -234,10 +236,10 @@
         });
       }
 
-    }, false);
+    });
 
     // Create a new list item when clicking on the "Add" button
-    function newElement() {
+    $('#click').on('click', function () {
       var inputValue = document.getElementById("myInput").value;
       const data = {
         task: inputValue
@@ -255,7 +257,8 @@
 
       var li = document.createElement("li");
       document.getElementById("myInput").value = "";
-      var t = document.createTextNode(inputValue);
+      var t = document.createElement("SPAN");
+      t.innerHTML = inputValue
       li.appendChild(t);
       if (inputValue === '') {
         alert("You must write something!");
@@ -276,7 +279,7 @@
           div.style.display = "none";
         }
       }
-    }
+    });
   </script>
 
 </body>
