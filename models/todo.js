@@ -33,8 +33,12 @@ module.exports.toggleCheck = function(task, callback) {
   Task.find({ task: task }).find(function(err, result) {
     if (err) throw new Error();
     else {
+      try {
       const val = !result[0].completed;
       Task.where({ task: task }).update({ completed: val }, callback);
+      } catch (e) {
+        console.log(e)
+      }
     }
   });
 };
