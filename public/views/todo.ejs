@@ -147,7 +147,7 @@
 <body>
 
   <div id="myDIV" class="header">
-    <span style="float:right; width:20% !important;" class="addBtn">
+    <span style="float:right; width:20% !important; background-color:whitesmoke" class="addBtn">
       <a  href="/user/logout">Logout</a>
     </span>
     <div class="imgcontainer">
@@ -169,6 +169,9 @@
     crossorigin="anonymous"></script>
 
   <script>
+    function safe_tags(str) {
+    return str.replace(/&/g,'amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') ;
+}
     document.getElementById("myInput")
       .addEventListener("keyup", function (event) {
         event.preventDefault();
@@ -223,7 +226,7 @@
         console.log(ev.target.childNodes)
         ev.target.classList.toggle('checked');
         data = {
-          task: ev.target.childNodes[0].innerHTML
+          task: safe_tags(ev.target.childNodes[0].innerHTML.toString())
         }
         $.ajax({
           async: true,
@@ -241,8 +244,9 @@
     // Create a new list item when clicking on the "Add" button
     $('#click').on('click', function () {
       var inputValue = document.getElementById("myInput").value;
+      console.log(safe_tags(safe_tags(inputValue)))
       const data = {
-        task: inputValue
+        task: safe_tags(safe_tags(inputValue))
       }
 
       $.ajax({
@@ -251,14 +255,14 @@
         url: "/",
         data: data,
         success: function () {
-          console.log("added");
+          console.log("added", data.task);
         }
       });
 
       var li = document.createElement("li");
       document.getElementById("myInput").value = "";
       var t = document.createElement("SPAN");
-      t.innerHTML = inputValue
+      t.innerHTML = safe_tags(safe_tags(inputValue))
       li.appendChild(t);
       if (inputValue === '') {
         alert("You must write something!");
