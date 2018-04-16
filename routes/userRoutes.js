@@ -83,7 +83,7 @@ passport.deserializeUser(function(id, done) {
 });
 
 router.post(
-  "/login",
+  "/login", 
   passport.authenticate("local", {
     successRedirect: "/",
     failureRedirect: "/user/login",
@@ -96,14 +96,14 @@ router.post(
   }
 );
 
-router.get("/register", function(req, res) {
+router.get("/register", isAuthenticated, function(req, res) {
   res.render("register", {
     errors: null
   });
 });
 
 // Login
-router.get("/login", function(req, res) {
+router.get("/login", isAuthenticated, function(req, res) {
   res.render("login");
 });
 
@@ -114,5 +114,13 @@ router.get("/logout", function(req, res) {
 
   res.redirect("/user/login");
 });
+
+function isAuthenticated(req, res, next) {
+  if (req.user) {
+    res.redirect('/')
+  } else {
+    return next()
+  }
+}
 
 module.exports = router;
